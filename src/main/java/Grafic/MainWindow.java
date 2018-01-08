@@ -5,12 +5,19 @@
  */
 package Grafic;
 
+import java.awt.event.ComponentEvent;
+import javax.swing.JOptionPane;
+import javier.oobjetos.Tripulacion;
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
+import org.neodatis.odb.Objects;
+import org.neodatis.odb.core.query.IQuery;
+import org.neodatis.odb.core.query.criteria.Where;
+import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 /**
  *
- * @author Alumno
+ * @author Javier M
  */
 public class MainWindow extends javax.swing.JFrame {
 
@@ -51,6 +58,22 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
+
+        jPanelTripulacion.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jPanelTripulacionComponentShown(evt);
+            }
+        });
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -69,14 +92,49 @@ public class MainWindow extends javax.swing.JFrame {
         jTextFieldcategoriaTripulacion.setText("jTextField3");
 
         jButtonConsultarTripulacion.setText("Consultar");
+        jButtonConsultarTripulacion.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jButtonConsultarTripulacionComponentShown(evt);
+            }
+        });
+        jButtonConsultarTripulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConsultarTripulacionActionPerformed(evt);
+            }
+        });
 
         jButtonModificarTripulacion.setText("Modificar");
+        jButtonModificarTripulacion.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jButtonModificarTripulacionComponentShown(evt);
+            }
+        });
+        jButtonModificarTripulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonModificarTripulacionActionPerformed(evt);
+            }
+        });
 
         jButtoninsertarTripulacion.setText("Insertar");
+        jButtoninsertarTripulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtoninsertarTripulacionActionPerformed(evt);
+            }
+        });
 
         jButtonBorrarTripulacion.setText("Borrar");
 
         jButtonAceptarTripulacion.setText("Aceptar");
+        jButtonAceptarTripulacion.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jButtonAceptarTripulacionComponentShown(evt);
+            }
+        });
+        jButtonAceptarTripulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAceptarTripulacionActionPerformed(evt);
+            }
+        });
 
         jButtonCancelarTripulacion.setText("Cancelar");
 
@@ -214,6 +272,94 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtoninsertarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoninsertarTripulacionActionPerformed
+        limpiarCamposTripulacion();
+        switchCamposTripulacion(true, true, true);
+        control = 1;
+    }//GEN-LAST:event_jButtoninsertarTripulacionActionPerformed
+
+    private void jButtonModificarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarTripulacionActionPerformed
+        switchCamposTripulacion(true, true, true);
+        control = 2;
+    }//GEN-LAST:event_jButtonModificarTripulacionActionPerformed
+
+    private void jButtonModificarTripulacionComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonModificarTripulacionComponentShown
+        
+    }//GEN-LAST:event_jButtonModificarTripulacionComponentShown
+
+    private void jButtonConsultarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarTripulacionActionPerformed
+        IQuery query = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", jTextFieldCodigoTripulacion.getText()));
+        Objects<Tripulacion> resultado = odb.getObjects(query);
+        if(resultado.size()==0){
+            JOptionPane.showMessageDialog(this,"Objeto no encontrado");
+        }
+        else{
+            Tripulacion tripulante = resultado.getFirst();
+            jTextFieldNombreTripulacion.setText(tripulante.getNombre());
+            jTextFieldcategoriaTripulacion.setText(tripulante.getCategoria());
+            switchBotonesTripulacion(true, true, true, true);
+            jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+        }  
+    }//GEN-LAST:event_jButtonConsultarTripulacionActionPerformed
+
+    private void jButtonConsultarTripulacionComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonConsultarTripulacionComponentShown
+        
+    }//GEN-LAST:event_jButtonConsultarTripulacionComponentShown
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        odb.close();
+    }//GEN-LAST:event_formWindowClosed
+
+    private void jButtonAceptarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarTripulacionActionPerformed
+        switch(control){
+        
+            case 1:
+                
+                IQuery query = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", jTextFieldCodigoTripulacion.getText()));
+                Objects<Tripulacion> resultado = odb.getObjects(query);
+                if(resultado.size()!=0){
+                    
+                    JOptionPane.showMessageDialog(this, "El objeto ya existe en la BBDD");
+                }
+                else {
+                    Tripulacion tripulante = new Tripulacion (
+                        Integer.parseInt(jTextFieldCodigoTripulacion.getText()), 
+                        jTextFieldNombreTripulacion.getText()
+                        ,jTextFieldcategoriaTripulacion.getText());
+                    odb.store(tripulante);
+                    odb.commit();
+                    JOptionPane.showMessageDialog(this, "Pos guardao'");
+                    jPanelTripulacionComponentShown(new ComponentEvent (this, 0));              
+                }
+                break;
+ 
+            case 2:
+                break;
+                
+            case 3: 
+                break;
+                
+                
+            default:
+                break;
+        
+        
+        }
+    }//GEN-LAST:event_jButtonAceptarTripulacionActionPerformed
+
+    private void jButtonAceptarTripulacionComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonAceptarTripulacionComponentShown
+        
+    }//GEN-LAST:event_jButtonAceptarTripulacionComponentShown
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formComponentShown
+
+    private void jPanelTripulacionComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanelTripulacionComponentShown
+        switchCamposTripulacion(true, false, false);
+        switchBotonesTripulacion(true, true, false, false);
+    }//GEN-LAST:event_jPanelTripulacionComponentShown
+
     /**
      * @param args the command line arguments
      */
@@ -270,6 +416,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldcategoriaTripulacion;
     // End of variables declaration//GEN-END:variables
     private ODB odb = null;
+    private int control = 0;
     
     private void switchCamposTripulacion(Boolean codigo, Boolean nombre, Boolean categoria){
     
@@ -282,6 +429,14 @@ public class MainWindow extends javax.swing.JFrame {
          jTextFieldCodigoTripulacion.setText("");
         jTextFieldNombreTripulacion.setText("");
         jTextFieldcategoriaTripulacion.setText("");
+    
+    }
+    private void switchBotonesTripulacion(Boolean borrar, Boolean consultar, Boolean modificar, Boolean insertar ){
+    
+    jButtonBorrarTripulacion.setEnabled(borrar);
+    jButtonConsultarTripulacion.setEnabled(consultar);
+    jButtonModificarTripulacion.setEnabled(modificar);
+    jButtoninsertarTripulacion.setEnabled(insertar);
     
     }
     
