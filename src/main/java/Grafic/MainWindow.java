@@ -292,9 +292,11 @@ public class MainWindow extends javax.swing.JFrame {
         Objects<Tripulacion> resultado = odb.getObjects(query);
         if(resultado.size()==0){
             JOptionPane.showMessageDialog(this,"Objeto no encontrado");
+            jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
         }
         else{
             Tripulacion tripulante = resultado.getFirst();
+            tripulanteBuscado = tripulante;
             jTextFieldNombreTripulacion.setText(tripulante.getNombre());
             jTextFieldcategoriaTripulacion.setText(tripulante.getCategoria());
             switchBotonesTripulacion(true, true, true, true);
@@ -334,9 +336,34 @@ public class MainWindow extends javax.swing.JFrame {
                 break;
  
             case 2:
+                //buscara para comprobar si anda repetido
+                IQuery query2 = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", jTextFieldCodigoTripulacion.getText()));//tripulante buscado
+                Objects <Tripulacion> resultados = odb.getObjects(query2);
+                if(Integer.parseInt(jTextFieldCodigoTripulacion.getText()) == tripulanteBuscado.getCodigo()){
+                     tripulanteBuscado.setNombre(jTextFieldCodigoTripulacion.getText());
+                    tripulanteBuscado.setCategoria(jTextFieldcategoriaTripulacion.getText());
+                    odb.store(tripulanteBuscado);
+                    odb.commit();
+                    JOptionPane.showMessageDialog(this, "Guardadito");
+                    jPanelTripulacionComponentShown(new ComponentEvent (this, 0));     
+                }
+                else if(resultados.size()!=0) {
+                   
+                    JOptionPane.showMessageDialog(this, "El código introducido ya existe");
+                }
+                else{
+                    tripulanteBuscado.setCodigo(Integer.parseInt(jTextFieldCodigoTripulacion.getText()));
+                    tripulanteBuscado.setNombre(jTextFieldNombreTripulacion.getText());
+                    tripulanteBuscado.setCategoria(jTextFieldcategoriaTripulacion.getText());
+                    odb.store(tripulanteBuscado);
+                    odb.commit();
+                    JOptionPane.showMessageDialog(this, "Guardadito");
+                }
                 break;
                 
             case 3: 
+                odb.delete(tripulanteBuscado);
+                odb.commit();
                 break;
                 
                 
@@ -416,6 +443,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldcategoriaTripulacion;
     // End of variables declaration//GEN-END:variables
     private ODB odb = null;
+    private Tripulacion tripulanteBuscado = null;
     private int control = 0;
     
     private void switchCamposTripulacion(Boolean codigo, Boolean nombre, Boolean categoria){
