@@ -7,7 +7,7 @@ package javier.oobjetos;
 
 /**
  *
- * @author Alumno
+ * @author Javier M
  */
 public class Tripulacion {
     
