@@ -167,6 +167,11 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         });
 
         jButtonBorrarTripulacion.setText("Borrar");
+        jButtonBorrarTripulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrarTripulacionActionPerformed(evt);
+            }
+        });
 
         jButtonAceptarTripulacion.setText("Aceptar");
         jButtonAceptarTripulacion.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -758,7 +763,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtoninsertarTripulacionActionPerformed
 
     private void jButtonModificarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarTripulacionActionPerformed
-        switchCamposTripulacion(true, true, true);
+        switchCamposTripulacion(false, true, true);
         control = 2;
     }//GEN-LAST:event_jButtonModificarTripulacionActionPerformed
 
@@ -767,26 +772,25 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonModificarTripulacionComponentShown
 
     private void jButtonConsultarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarTripulacionActionPerformed
-        if (!jTextFieldCodigoTripulacion.getText().isEmpty()){
+       // if (!jTextFieldCodigoTripulacion.getText().isEmpty()){
             IQuery query = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", Integer.parseInt(jTextFieldCodigoTripulacion.getText())));
             Objects<Tripulacion> resultado = odb.getObjects(query);
             if(resultado.size()==0){
                 JOptionPane.showMessageDialog(this,"Objeto no encontrado");
-                jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+                //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
             }
             else{
                 Tripulacion tripulante = resultado.getFirst();
                 tripulanteBuscado = tripulante;
                 jTextFieldNombreTripulacion.setText(tripulante.getNombre());
                 jTextFieldcategoriaTripulacion.setText(tripulante.getCategoria());
-                jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+                //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
                 switchBotonesTripulacion(true, true, true, true);
-
             }  
-        }
-        else{
+        /*}
+       else{
             JOptionPane.showMessageDialog(this,"No hay nada en el campo código");
-        }
+        }*/
     }//GEN-LAST:event_jButtonConsultarTripulacionActionPerformed
 
     private void jButtonConsultarTripulacionComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonConsultarTripulacionComponentShown
@@ -803,7 +807,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
             case 1:
                 
                 if(!(jTextFieldCodigoTripulacion.getText().isEmpty()||jTextFieldNombreTripulacion.getText().isEmpty()||jTextFieldcategoriaTripulacion.getText().isEmpty())){
-                    IQuery query = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", jTextFieldCodigoTripulacion.getText()));
+                    IQuery query = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", Integer.parseInt(jTextFieldCodigoTripulacion.getText())));
                     Objects<Tripulacion> resultado = odb.getObjects(query);
                     if(resultado.size()!=0){
 
@@ -825,17 +829,16 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                 }
                 break;
  
-            case 2:
+            case 2://modificar
                 //buscar para comprobar si anda repetido
                 IQuery query2 = new CriteriaQuery(Tripulacion.class, Where.equal("codigo", jTextFieldCodigoTripulacion.getText()));//tripulante buscado
                 Objects <Tripulacion> resultados = odb.getObjects(query2);
                 if(Integer.parseInt(jTextFieldCodigoTripulacion.getText()) == tripulanteBuscado.getCodigo()){
-                    tripulanteBuscado.setNombre(jTextFieldCodigoTripulacion.getText());
+                    tripulanteBuscado.setNombre(jTextFieldNombreTripulacion.getText());
                     tripulanteBuscado.setCategoria(jTextFieldcategoriaTripulacion.getText());
                     odb.store(tripulanteBuscado);
                     odb.commit();
                     JOptionPane.showMessageDialog(this, "Guardadito");
-                    jPanelTripulacionComponentShown(new ComponentEvent (this, 0));     
                 }
                 else if(resultados.size()!=0) {
                    
@@ -848,17 +851,20 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                     odb.store(tripulanteBuscado);
                     odb.commit();
                     JOptionPane.showMessageDialog(this, "Guardadito");
+                    
                 }
+                jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
                 break;
                 
-            case 3: 
+            case 3: //delete
                 odb.delete(tripulanteBuscado);
                 odb.commit();
+                limpiarCamposTripulacion();
+                JOptionPane.showMessageDialog(this, "Borradito");
                 break;
                                
             default:
-                break;
-
+                break;          
         }
     }//GEN-LAST:event_jButtonAceptarTripulacionActionPerformed
 
@@ -935,6 +941,10 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         ventanatripulacion = new TripulacionVuelo(this);
         ventanatripulacion.setVisible(true);
     }//GEN-LAST:event_jButtonGestionTripulantesActionPerformed
+
+    private void jButtonBorrarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarTripulacionActionPerformed
+        control = 3;
+    }//GEN-LAST:event_jButtonBorrarTripulacionActionPerformed
 
     /**
      * @param args the command line arguments
