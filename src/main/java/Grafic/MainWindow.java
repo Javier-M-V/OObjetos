@@ -10,6 +10,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JOptionPane;
+import javier.oobjetos.Pasajeros;
 import javier.oobjetos.Tripulacion;
 import javier.oobjetos.Vuelo;
 import org.neodatis.odb.ODB;
@@ -127,12 +128,6 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         jLabel3.setText("Nombre:");
 
         jLabel4.setText("Categoría:");
-
-        jTextFieldCodigoTripulacion.setText("jTextField1");
-
-        jTextFieldNombreTripulacion.setText("jTextField2");
-
-        jTextFieldcategoriaTripulacion.setText("jTextField3");
 
         jButtonConsultarTripulacion.setText("Consultar");
         jButtonConsultarTripulacion.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -310,12 +305,6 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
 
         jLabel8.setText("Teléfono:");
 
-        jTextFieldCodigoPasajeros.setText("jTextField1");
-
-        jTextFieldNombrePasajeros.setText("jTextField2");
-
-        jTextFieldTelefonoPasajeros.setText("jTextField3");
-
         jButtonConsultarPasajeros.setText("Consultar");
         jButtonConsultarPasajeros.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -348,6 +337,11 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         });
 
         jButtonBorrarPasajeros.setText("Borrar");
+        jButtonBorrarPasajeros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrarPasajerosActionPerformed(evt);
+            }
+        });
 
         jButtonAceptarPasajeros.setText("Aceptar");
         jButtonAceptarPasajeros.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -385,8 +379,6 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         );
 
         jLabel9.setText("Dirección:");
-
-        jTextFieldDireccionPasajeros.setText("jTextField1");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -494,12 +486,6 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         jLabel12.setText("Origen:");
 
         jLabel13.setText("Destino:");
-
-        jTextFieldIdentifivadorVuelos.setText("jTextField1");
-
-        jTextFieldOrigenVuelos.setText("jTextField2");
-
-        jTextFieldDestinoVuelos.setText("jTextField3");
 
         jButtonConsultarVuelos.setText("Consultar");
         jButtonConsultarVuelos.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -898,7 +884,26 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonConsultarPasajerosComponentShown
 
     private void jButtonConsultarPasajerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarPasajerosActionPerformed
-        // TODO add your handling code here:
+         if (!jTextFieldCodigoPasajeros.getText().isEmpty()){
+            IQuery query = new CriteriaQuery(Pasajeros.class, Where.equal("codigo", Integer.parseInt(jTextFieldCodigoPasajeros.getText())));
+            Objects<Pasajeros> resultado = odb.getObjects(query);
+            if(resultado.size() == 0){
+                JOptionPane.showMessageDialog(this,"Objeto no encontrado");
+                //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+            }
+            else{
+                Pasajeros pasajero = resultado.getFirst();
+                pasajerobuscado = pasajero;
+                jTextFieldNombrePasajeros.setText(pasajero.getNombre());
+                jTextFieldTelefonoPasajeros.setText(pasajero.getTel());
+                jTextFieldDireccionPasajeros.setText(pasajero.getDireccion());
+                //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+                switchBotonesPasajeros(true, true, true, true);
+            }  
+        }
+       else{
+            JOptionPane.showMessageDialog(this,"Introduzca datos en el campo código");
+        }
     }//GEN-LAST:event_jButtonConsultarPasajerosActionPerformed
 
     private void jButtonModificarPasajerosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonModificarPasajerosComponentShown
@@ -906,11 +911,11 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonModificarPasajerosComponentShown
 
     private void jButtonModificarPasajerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarPasajerosActionPerformed
-        // TODO add your handling code here:
+        control = 2;
     }//GEN-LAST:event_jButtonModificarPasajerosActionPerformed
 
     private void jButtoninsertarPasajerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoninsertarPasajerosActionPerformed
-        // TODO add your handling code here:
+        control = 1;
     }//GEN-LAST:event_jButtoninsertarPasajerosActionPerformed
 
     private void jButtonAceptarPasajerosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonAceptarPasajerosComponentShown
@@ -918,7 +923,78 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonAceptarPasajerosComponentShown
 
     private void jButtonAceptarPasajerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarPasajerosActionPerformed
-        // TODO add your handling code here:
+        switch(control){
+        
+            case 1://insertar
+                if(!(jTextFieldCodigoPasajeros.getText().isEmpty()||
+                        jTextFieldNombrePasajeros.getText().isEmpty()||
+                        jTextFieldDireccionPasajeros.getText().isEmpty()||
+                        jTextFieldTelefonoPasajeros.getText().isEmpty())){
+                    IQuery query = new CriteriaQuery(Pasajeros.class, Where.equal("codigo", Integer.parseInt(jTextFieldCodigoPasajeros.getText())));
+                    Objects<Pasajeros> resultado = odb.getObjects(query);
+                    if(resultado.size()!=0){
+
+                        JOptionPane.showMessageDialog(this, "Ya hay un objeto en la BBDD con ese código");
+                    }
+                    else {
+                        Pasajeros pasajero = new Pasajeros(
+                            Integer.parseInt(jTextFieldCodigoPasajeros.getText()), 
+                            jTextFieldNombrePasajeros.getText(),
+                            jTextFieldTelefonoPasajeros.getText(),
+                            jTextFieldDireccionPasajeros.getText());
+                        odb.store(pasajero);
+                        odb.commit();
+                        JOptionPane.showMessageDialog(this, "Pos guardao'");
+                        jPanelTripulacionComponentShown(new ComponentEvent (this, 0));              
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "Introduce datos en todos los campos");
+                }
+                break;
+                
+            case 2:
+                //buscar para comprobar si anda repetido
+                IQuery query2 = new CriteriaQuery(Pasajeros.class, Where.equal("codigo", jTextFieldCodigoPasajeros.getText()));//pasajero buscado
+                Objects <Pasajeros> resultados = odb.getObjects(query2);
+                if(Integer.parseInt(jTextFieldCodigoPasajeros.getText()) == pasajerobuscado.getCodigo()){
+                    pasajerobuscado.setNombre(jTextFieldCodigoPasajeros.getText());
+                    //
+                    odb.store(pasajerobuscado);
+                    odb.commit();
+                    JOptionPane.showMessageDialog(this, "Guardadito");
+                }
+                else if(resultados.size()!=0) {
+                   
+                    JOptionPane.showMessageDialog(this, "El código introducido ya existe en la BBDD");
+                }
+                else{
+                    pasajerobuscado.setCodigo(Integer.parseInt(jTextFieldCodigoTripulacion.getText()));
+                   //
+                    odb.store(pasajerobuscado);
+                    odb.commit();
+                    JOptionPane.showMessageDialog(this, "Guardadito");
+                    
+                }
+                jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+                break;
+        
+            case 3:
+                int BotonSi = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "¿Seguro quieres borrar a este pasajero?","Aviso",BotonSi);
+                if(dialogResult == JOptionPane.YES_OPTION){
+                    odb.delete(pasajerobuscado);
+                    odb.commit();
+                    limpiarCamposPasajeros();
+                    JOptionPane.showMessageDialog(this, "Borradito");
+                }
+                switchBotonesPasajeros(true,true,false,false);
+                break;
+                               
+    
+                
+               
+        }
     }//GEN-LAST:event_jButtonAceptarPasajerosActionPerformed
 
     private void jButtonConsultarVuelosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonConsultarVuelosComponentShown
@@ -967,6 +1043,12 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         
         
     }//GEN-LAST:event_jButtonCancelarTripulacionActionPerformed
+
+    private void jButtonBorrarPasajerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarPasajerosActionPerformed
+        control = 3;
+        switchBotonesPasajeros(true, true, false, false);
+        
+    }//GEN-LAST:event_jButtonBorrarPasajerosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1067,6 +1149,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     private static ODB odb = null;
     private static ODBServer server = null;
     private Tripulacion tripulanteBuscado = null;
+    private Pasajeros pasajerobuscado = null;
     private int control = 0;
     public Vuelo vuelobuscado = null;
     TripulacionVuelo ventanatripulacion;
@@ -1086,10 +1169,17 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }
     
     private void limpiarCamposTripulacion(){
-         jTextFieldCodigoTripulacion.setText("");
+        jTextFieldCodigoTripulacion.setText("");
         jTextFieldNombreTripulacion.setText("");
         jTextFieldcategoriaTripulacion.setText("");
     
+    }
+    
+     private void limpiarCamposPasajeros() {
+        jTextFieldCodigoPasajeros.setText("");
+        jTextFieldDireccionPasajeros.setText("");
+        jTextFieldNombrePasajeros.setText("");
+        jTextFieldTelefonoPasajeros.setText("");         
     }
     /*consultar, insertar, modificar, borrar*/
     private void switchBotonesTripulacion(Boolean consulta, Boolean insertar, Boolean modificar, Boolean borrar ){
@@ -1158,7 +1248,10 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     private void jButtonAceptarTripulacion(boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+   
+
+   
 
 }
 
