@@ -959,7 +959,9 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                 Objects <Pasajeros> resultados = odb.getObjects(query2);
                 if(Integer.parseInt(jTextFieldCodigoPasajeros.getText()) == pasajerobuscado.getCodigo()){
                     pasajerobuscado.setNombre(jTextFieldCodigoPasajeros.getText());
-                    //
+                    pasajerobuscado.setTel(jTextFieldTelefonoPasajeros.getText());
+                    pasajerobuscado.setDireccion(jTextFieldDireccionPasajeros.getText());
+                    pasajerobuscado.setNombre(jTextFieldNombrePasajeros.getText());
                     odb.store(pasajerobuscado);
                     odb.commit();
                     JOptionPane.showMessageDialog(this, "Guardadito");
@@ -970,7 +972,10 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                 }
                 else{
                     pasajerobuscado.setCodigo(Integer.parseInt(jTextFieldCodigoTripulacion.getText()));
-                   //
+                    pasajerobuscado.setNombre(jTextFieldCodigoPasajeros.getText());
+                    pasajerobuscado.setTel(jTextFieldTelefonoPasajeros.getText());
+                    pasajerobuscado.setDireccion(jTextFieldDireccionPasajeros.getText());
+                    pasajerobuscado.setNombre(jTextFieldNombrePasajeros.getText());
                     odb.store(pasajerobuscado);
                     odb.commit();
                     JOptionPane.showMessageDialog(this, "Guardadito");
