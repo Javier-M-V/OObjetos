@@ -5,11 +5,14 @@
  */
 package Grafic;
 
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javier.oobjetos.Tripulacion;
 import javier.oobjetos.Vuelo;
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.Objects;
+import org.neodatis.odb.core.query.IQuery;
+import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 /**
  *
@@ -21,15 +24,14 @@ public class TripulacionVuelo extends javax.swing.JFrame {
      * Creates new form TripulacionVuelo
      */
     public TripulacionVuelo() {
-        initComponents();
-        
+        initComponents(); 
     }
     public TripulacionVuelo(MainWindow ventanaPrincipal) {
         initComponents();
         odb = ventanaPrincipal.getOdb();
         vuelo = ventanaPrincipal.vuelobuscado;
-        this.addWindowListener(ventanaPrincipal);
-        
+        this.addWindowListener(ventanaPrincipal); 
+        cargarDatosIniciales();
     }
 
     /**
@@ -42,39 +44,57 @@ public class TripulacionVuelo extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jListTripulantesDisponibles = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        jListTripulantesAsignados = new javax.swing.JList<>();
+        jButtonTodos = new javax.swing.JButton();
+        jButtonAnadir = new javax.swing.JButton();
+        jButtonQuitar = new javax.swing.JButton();
+        jButtonQuitarTodos = new javax.swing.JButton();
+        jButtonFinalizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jList1.setBorder(javax.swing.BorderFactory.createTitledBorder("Tripulantes disponibles"));
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jListTripulantesDisponibles.setBorder(javax.swing.BorderFactory.createTitledBorder("Tripulantes disponibles"));
+        jScrollPane1.setViewportView(jListTripulantesDisponibles);
+
+        jListTripulantesAsignados.setBorder(javax.swing.BorderFactory.createTitledBorder("Tripulantes asignados"));
+        jScrollPane2.setViewportView(jListTripulantesAsignados);
+
+        jButtonTodos.setText("Añadir todos");
+        jButtonTodos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTodosActionPerformed(evt);
+            }
         });
-        jScrollPane1.setViewportView(jList1);
 
-        jList2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tripulantes asignados"));
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jButtonAnadir.setText("Añadir");
+        jButtonAnadir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnadirActionPerformed(evt);
+            }
         });
-        jScrollPane2.setViewportView(jList2);
 
-        jButton1.setText("Añadir todos");
+        jButtonQuitar.setText("Quitar");
+        jButtonQuitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonQuitarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Añadir");
+        jButtonQuitarTodos.setText("Quitar todos");
+        jButtonQuitarTodos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonQuitarTodosActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Quitar");
-
-        jButton4.setText("Quitar todos");
+        jButtonFinalizar.setText("Finalizar");
+        jButtonFinalizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFinalizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,36 +105,83 @@ public class TripulacionVuelo extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonAnadir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonTodos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonQuitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonQuitarTodos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jButtonFinalizar)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(jButton1)
+                        .addComponent(jButtonTodos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(jButtonAnadir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
+                        .addComponent(jButtonQuitar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane2)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)))
+                        .addComponent(jButtonQuitarTodos))
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                    .addComponent(jButtonFinalizar, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonAnadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnadirActionPerformed
+        
+        String nombre = jListTripulantesDisponibles.getSelectedValue();
+        listaasignados.addElement(nombre);
+        jListTripulantesAsignados.setModel(listaasignados);  
+        listadisponibles.remove(jListTripulantesDisponibles.getSelectedIndex());
+        jListTripulantesDisponibles.setModel(listadisponibles);       
+    }//GEN-LAST:event_jButtonAnadirActionPerformed
+
+    private void jButtonTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTodosActionPerformed
+        
+        for(int i =0; i<listadisponibles.getSize();i++){
+
+            String nombre = listadisponibles.get(i).toString();
+            System.out.println(nombre);
+            listaasignados.addElement(nombre);
+        }
+        jListTripulantesAsignados.setModel(listaasignados);  
+        listadisponibles.removeAllElements();
+        jListTripulantesDisponibles.setModel(listadisponibles);
+    }//GEN-LAST:event_jButtonTodosActionPerformed
+
+    private void jButtonQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonQuitarActionPerformed
+        String nombre = jListTripulantesAsignados.getSelectedValue();
+        listadisponibles.addElement(nombre);
+        jListTripulantesDisponibles.setModel(listadisponibles);  
+        listaasignados.remove(jListTripulantesAsignados.getSelectedIndex());
+        jListTripulantesAsignados.setModel(listaasignados); 
+    }//GEN-LAST:event_jButtonQuitarActionPerformed
+
+    private void jButtonQuitarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonQuitarTodosActionPerformed
+        for(int i =0; i<listaasignados.getSize();i++){
+
+            String nombre = listaasignados.get(i).toString();
+            listadisponibles.addElement(nombre);
+        }
+        jListTripulantesDisponibles.setModel(listadisponibles);  
+        listaasignados.removeAllElements();
+        jListTripulantesAsignados.setModel(listaasignados);
+    }//GEN-LAST:event_jButtonQuitarTodosActionPerformed
+
+    private void jButtonFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFinalizarActionPerformed
+        
+    }//GEN-LAST:event_jButtonFinalizarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,25 +219,31 @@ public class TripulacionVuelo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
+    private javax.swing.JButton jButtonAnadir;
+    private javax.swing.JButton jButtonFinalizar;
+    private javax.swing.JButton jButtonQuitar;
+    private javax.swing.JButton jButtonQuitarTodos;
+    private javax.swing.JButton jButtonTodos;
+    private javax.swing.JList<String> jListTripulantesAsignados;
+    private javax.swing.JList<String> jListTripulantesDisponibles;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
+    
     ODB odb;
     Vuelo vuelo;
-    DefaultListModel listadisponibles;
-    DefaultListModel listavuelos;
+    DefaultListModel listadisponibles = new DefaultListModel();
+    DefaultListModel listaasignados = new DefaultListModel();
 
     private void cargarDatosIniciales(){
-    
-        Objects<Tripulacion> resultados = odb.getObjects(Tripulacion.class);
-        for (Tripulacion tripulante:resultados){
         
+        IQuery query = new CriteriaQuery(Tripulacion.class);
+        Objects<Tripulacion> resultados = odb.getObjects(query);
+
+        for (Tripulacion tripulante:resultados){
+
+            listadisponibles.addElement(tripulante.getNombre());
         }
-    }
+        jListTripulantesDisponibles.setModel(listadisponibles);
+    }   
 }

@@ -994,11 +994,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                     JOptionPane.showMessageDialog(this, "Borradito");
                 }
                 switchBotonesPasajeros(true,true,false,false);
-                break;
-                               
-    
-                
-               
+                break;        
         }
     }//GEN-LAST:event_jButtonAceptarPasajerosActionPerformed
 
@@ -1007,7 +1003,24 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonConsultarVuelosComponentShown
 
     private void jButtonConsultarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarVuelosActionPerformed
-        // TODO add your handling code here:
+        if (!jTextFieldIdentifivadorVuelos.getText().isEmpty()){
+            IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identidificador", Integer.parseInt(jTextFieldIdentifivadorVuelos.getText())));
+            Objects<Vuelo> resultado = odb.getObjects(query);
+            if(resultado.size() == 0){
+                JOptionPane.showMessageDialog(this,"Objeto no encontrado");
+            }
+            else{
+                Vuelo vuelo = resultado.getFirst();
+                vuelobuscado = vuelo;
+                jTextFieldIdentifivadorVuelos.setText(vuelo.getIdentidificador());
+                jTextFieldOrigenVuelos.setText(vuelo.getAeropuerto_origen());
+                jTextFieldDestinoVuelos.setText(vuelo.getAeropuerto_destino());
+                //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));  
+            }  
+        }
+       else{
+            JOptionPane.showMessageDialog(this,"Introduzca datos en el campo código");
+        }
     }//GEN-LAST:event_jButtonConsultarVuelosActionPerformed
 
     private void jButtonModificarVuelosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonModificarVuelosComponentShown
@@ -1019,7 +1032,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonModificarVuelosActionPerformed
 
     private void jButtoninsertarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoninsertarVuelosActionPerformed
-        // TODO add your handling code here:
+        control = 1;
     }//GEN-LAST:event_jButtoninsertarVuelosActionPerformed
 
     private void jButtonAceptarVuelosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonAceptarVuelosComponentShown
@@ -1027,7 +1040,35 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonAceptarVuelosComponentShown
 
     private void jButtonAceptarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarVuelosActionPerformed
-        // TODO add your handling code here:
+        switch(control){
+            
+            case 1:
+                
+                if(!(jTextFieldIdentifivadorVuelos.getText().isEmpty()||
+                        jTextFieldOrigenVuelos.getText().isEmpty()||
+                        jTextFieldDestinoVuelos.getText().isEmpty())){
+                    IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identidificador", Integer.parseInt(jTextFieldIdentifivadorVuelos.getText())));
+                    Objects<Vuelo> resultado = odb.getObjects(query);
+                    if(resultado.size()!=0){
+
+                        JOptionPane.showMessageDialog(this, "Ya hay un objeto en la BBDD con ese código");
+                    }
+                    else {
+                        Vuelo vuelo = new Vuelo(
+                            jTextFieldIdentifivadorVuelos.getText(), 
+                            jTextFieldOrigenVuelos.getText(),
+                            jTextFieldDestinoVuelos.getText());
+                        odb.store(vuelo);
+                        odb.commit();
+                        JOptionPane.showMessageDialog(this, "Pos guardao'");
+                        jPanelTripulacionComponentShown(new ComponentEvent (this, 0));              
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "Introduce datos en todos los campos");
+                }           
+                break;
+        }
     }//GEN-LAST:event_jButtonAceptarVuelosActionPerformed
 
     private void jButtonGestionTripulantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGestionTripulantesActionPerformed
@@ -1189,28 +1230,28 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     /*consultar, insertar, modificar, borrar*/
     private void switchBotonesTripulacion(Boolean consulta, Boolean insertar, Boolean modificar, Boolean borrar ){
     
-    jButtonConsultarTripulacion.setEnabled(consulta);
-    jButtoninsertarTripulacion.setEnabled(insertar);
-    jButtonModificarTripulacion.setEnabled(modificar);
-    jButtonBorrarTripulacion.setEnabled(borrar);
+        jButtonConsultarTripulacion.setEnabled(consulta);
+        jButtoninsertarTripulacion.setEnabled(insertar);
+        jButtonModificarTripulacion.setEnabled(modificar);
+        jButtonBorrarTripulacion.setEnabled(borrar);
     
     }
     
     private void switchBotonesPasajeros(Boolean consulta, Boolean insertar, Boolean modificar, Boolean borrar ){
     
-    jButtonConsultarPasajeros.setEnabled(consulta);
-    jButtoninsertarPasajeros.setEnabled(insertar);
-    jButtonModificarPasajeros.setEnabled(modificar);
-    jButtonBorrarPasajeros.setEnabled(borrar);
+        jButtonConsultarPasajeros.setEnabled(consulta);
+        jButtoninsertarPasajeros.setEnabled(insertar);
+        jButtonModificarPasajeros.setEnabled(modificar);
+        jButtonBorrarPasajeros.setEnabled(borrar);
     
     }
     
     private void switchBotonesVuelo(Boolean consulta, Boolean insertar, Boolean modificar, Boolean borrar ){
     
-    jButtonConsultarVuelos.setEnabled(consulta);
-    jButtoninsertarVuelos.setEnabled(insertar);
-    jButtonModificarVuelos.setEnabled(modificar);
-    jButtonBorrarVuelos.setEnabled(borrar);
+        jButtonConsultarVuelos.setEnabled(consulta);
+        jButtoninsertarVuelos.setEnabled(insertar);
+        jButtonModificarVuelos.setEnabled(modificar);
+        jButtonBorrarVuelos.setEnabled(borrar);
     
     }
 
@@ -1253,11 +1294,6 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     private void jButtonAceptarTripulacion(boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-   
-
-   
-
 }
 
 
