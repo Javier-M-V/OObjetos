@@ -610,7 +610,7 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jTextFieldIdentifivadorVuelos" min="-2" pref="296" max="-2" attributes="0"/>
+                                          <Component id="jTextFieldIdentificadorVuelos" min="-2" pref="296" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
@@ -659,7 +659,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jTextFieldIdentifivadorVuelos" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jTextFieldIdentificadorVuelos" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -705,7 +705,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel11">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Identrificador:"/>
+                    <Property name="text" type="java.lang.String" value="Identificador"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel12">
@@ -718,7 +718,7 @@
                     <Property name="text" type="java.lang.String" value="Destino:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="jTextFieldIdentifivadorVuelos">
+                <Component class="javax.swing.JTextField" name="jTextFieldIdentificadorVuelos">
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldOrigenVuelos">
                 </Component>

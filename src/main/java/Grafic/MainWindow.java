@@ -83,7 +83,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jTextFieldIdentifivadorVuelos = new javax.swing.JTextField();
+        jTextFieldIdentificadorVuelos = new javax.swing.JTextField();
         jTextFieldOrigenVuelos = new javax.swing.JTextField();
         jTextFieldDestinoVuelos = new javax.swing.JTextField();
         jButtonConsultarVuelos = new javax.swing.JButton();
@@ -481,7 +481,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
 
         jLabel10.setText("Datos de Vuelo");
 
-        jLabel11.setText("Identrificador:");
+        jLabel11.setText("Identificador");
 
         jLabel12.setText("Origen:");
 
@@ -579,7 +579,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldIdentifivadorVuelos, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldIdentificadorVuelos, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addGap(17, 17, 17)
@@ -615,7 +615,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldIdentifivadorVuelos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldIdentificadorVuelos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1003,8 +1003,8 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonConsultarVuelosComponentShown
 
     private void jButtonConsultarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarVuelosActionPerformed
-        if (!jTextFieldIdentifivadorVuelos.getText().isEmpty()){
-            IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identidificador", Integer.parseInt(jTextFieldIdentifivadorVuelos.getText())));
+        if (!jTextFieldIdentificadorVuelos.getText().isEmpty()){
+            IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identificador", jTextFieldIdentificadorVuelos.getText()));
             Objects<Vuelo> resultado = odb.getObjects(query);
             if(resultado.size() == 0){
                 JOptionPane.showMessageDialog(this,"Objeto no encontrado");
@@ -1012,7 +1012,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
             else{
                 Vuelo vuelo = resultado.getFirst();
                 vuelobuscado = vuelo;
-                jTextFieldIdentifivadorVuelos.setText(vuelo.getIdentidificador());
+                jTextFieldIdentificadorVuelos.setText(vuelo.getIdentificador());
                 jTextFieldOrigenVuelos.setText(vuelo.getAeropuerto_origen());
                 jTextFieldDestinoVuelos.setText(vuelo.getAeropuerto_destino());
                 //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));  
@@ -1032,7 +1032,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonModificarVuelosActionPerformed
 
     private void jButtoninsertarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoninsertarVuelosActionPerformed
-        control = 1;
+        controlvuelo = 1;
     }//GEN-LAST:event_jButtoninsertarVuelosActionPerformed
 
     private void jButtonAceptarVuelosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jButtonAceptarVuelosComponentShown
@@ -1040,14 +1040,12 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonAceptarVuelosComponentShown
 
     private void jButtonAceptarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarVuelosActionPerformed
-        switch(control){
+        switch(controlvuelo){
             
             case 1:
                 
-                if(!(jTextFieldIdentifivadorVuelos.getText().isEmpty()||
-                        jTextFieldOrigenVuelos.getText().isEmpty()||
-                        jTextFieldDestinoVuelos.getText().isEmpty())){
-                    IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identidificador", Integer.parseInt(jTextFieldIdentifivadorVuelos.getText())));
+                if(!(jTextFieldIdentificadorVuelos.getText().isEmpty()||jTextFieldOrigenVuelos.getText().isEmpty()||jTextFieldDestinoVuelos.getText().isEmpty())){
+                    IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identificador", jTextFieldIdentificadorVuelos.getText()));
                     Objects<Vuelo> resultado = odb.getObjects(query);
                     if(resultado.size()!=0){
 
@@ -1055,7 +1053,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                     }
                     else {
                         Vuelo vuelo = new Vuelo(
-                            jTextFieldIdentifivadorVuelos.getText(), 
+                            jTextFieldIdentificadorVuelos.getText(), 
                             jTextFieldOrigenVuelos.getText(),
                             jTextFieldDestinoVuelos.getText());
                         odb.store(vuelo);
@@ -1184,7 +1182,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JTextField jTextFieldCodigoTripulacion;
     private javax.swing.JTextField jTextFieldDestinoVuelos;
     private javax.swing.JTextField jTextFieldDireccionPasajeros;
-    private javax.swing.JTextField jTextFieldIdentifivadorVuelos;
+    private javax.swing.JTextField jTextFieldIdentificadorVuelos;
     private javax.swing.JTextField jTextFieldNombrePasajeros;
     private javax.swing.JTextField jTextFieldNombreTripulacion;
     private javax.swing.JTextField jTextFieldOrigenVuelos;
@@ -1197,6 +1195,7 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     private Tripulacion tripulanteBuscado = null;
     private Pasajeros pasajerobuscado = null;
     private int control = 0;
+    private int controlvuelo = 0;
     public Vuelo vuelobuscado = null;
     TripulacionVuelo ventanatripulacion;
     

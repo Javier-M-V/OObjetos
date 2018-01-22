@@ -14,24 +14,24 @@ import java.util.Set;
  */
 public class Vuelo {
     
-    private String identidificador;
+    private String identificador;
     private String aeropuerto_origen;
     private String aeropuerto_destino;
     private Set <Pasajeros> pasajerosSet = new HashSet(0);
     private Set <Tripulacion> tripulacionSet = new HashSet(0);
 
     public Vuelo(String identidificador, String aeropuerto_origen, String aeropuerto_destino) {
-        this.identidificador = identidificador;
+        this.identificador = identidificador;
         this.aeropuerto_origen = aeropuerto_origen;
         this.aeropuerto_destino = aeropuerto_destino;
     }
 
-    public String getIdentidificador() {
-        return identidificador;
+    public String getIdentificador() {
+        return identificador;
     }
 
-    public void setIdentidificador(String identidificador) {
-        this.identidificador = identidificador;
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
     public String getAeropuerto_origen() {
