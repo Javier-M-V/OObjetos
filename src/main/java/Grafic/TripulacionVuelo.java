@@ -5,13 +5,18 @@
  */
 package Grafic;
 
+import com.sun.imageio.plugins.jpeg.JPEG;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.DefaultListModel;
+import javier.oobjetos.Pasajeros;
 import javier.oobjetos.Tripulacion;
 import javier.oobjetos.Vuelo;
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.core.query.IQuery;
+import org.neodatis.odb.core.query.criteria.Where;
 import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 /**
@@ -180,7 +185,17 @@ public class TripulacionVuelo extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonQuitarTodosActionPerformed
 
     private void jButtonFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFinalizarActionPerformed
+        Set<Tripulacion> settripulacion = new HashSet(0);
         
+        for(int i = 0;i<listaasignados.size();i++){
+            IQuery query = new CriteriaQuery(Tripulacion.class, Where.equal("nombre", listaasignados.get(i).toString()));
+            Objects<Tripulacion> resultado = odb.getObjects(query);
+            Tripulacion tripulante = resultado.getFirst();
+            settripulacion.add(tripulante);
+        }
+        vuelo.setTripulacionSet(settripulacion);
+        odb.store(vuelo);
+        TripulacionVuelo.this.dispose();
     }//GEN-LAST:event_jButtonFinalizarActionPerformed
 
     /**
@@ -231,7 +246,7 @@ public class TripulacionVuelo extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     
     ODB odb;
-    Vuelo vuelo;
+    public Vuelo vuelo;
     DefaultListModel listadisponibles = new DefaultListModel();
     DefaultListModel listaasignados = new DefaultListModel();
 

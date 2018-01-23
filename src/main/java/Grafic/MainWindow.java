@@ -9,7 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Iterator;
+import java.util.Set;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javier.oobjetos.Pasajeros;
 import javier.oobjetos.Tripulacion;
 import javier.oobjetos.Vuelo;
@@ -519,6 +522,11 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         });
 
         jButtonBorrarVuelos.setText("Borrar");
+        jButtonBorrarVuelos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrarVuelosActionPerformed(evt);
+            }
+        });
 
         jButtonAceptarVuelos.setText("Aceptar");
         jButtonAceptarVuelos.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -1015,9 +1023,27 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                 jTextFieldIdentificadorVuelos.setText(vuelo.getIdentificador());
                 jTextFieldOrigenVuelos.setText(vuelo.getAeropuerto_origen());
                 jTextFieldDestinoVuelos.setText(vuelo.getAeropuerto_destino());
-                //jPanelTripulacionComponentShown(new ComponentEvent (this, 0));  
+                
+                DefaultTableModel modeloTabla = (DefaultTableModel) jTableTripulacion.getModel();
+
+                modeloTabla.setRowCount(vuelobuscado.getTripulacionSet().size());
+                Set<Tripulacion> settripulacion = vuelobuscado.getTripulacionSet();
+                int i = 0;
+                if(settripulacion!=null){
+                    Iterator iteratriupacion = settripulacion.iterator();
+                    while (iteratriupacion.hasNext())
+                    {
+                        Tripulacion tripu = (Tripulacion) iteratriupacion.next();
+                        modeloTabla.setValueAt(tripu.getCodigo(), i, 0);
+                        modeloTabla.setValueAt(tripu.getNombre(), i, 1);
+                        modeloTabla.setValueAt(tripu.getCategoria(), i, 2);
+                        i++;
+                    }
+                    jTableTripulacion.setModel(modeloTabla);
+                }
             }  
         }
+            
        else{
             JOptionPane.showMessageDialog(this,"Introduzca datos en el campo código");
         }
@@ -1028,7 +1054,9 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonModificarVuelosComponentShown
 
     private void jButtonModificarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarVuelosActionPerformed
-        // TODO add your handling code here:
+        controlvuelo = 2;
+        switchCamposVuelos(false,true,true);
+        switchBotonesVuelo(true, true, false, false);
     }//GEN-LAST:event_jButtonModificarVuelosActionPerformed
 
     private void jButtoninsertarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoninsertarVuelosActionPerformed
@@ -1040,10 +1068,8 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_jButtonAceptarVuelosComponentShown
 
     private void jButtonAceptarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarVuelosActionPerformed
-        switch(controlvuelo){
-            
+        switch(controlvuelo){  
             case 1:
-                
                 if(!(jTextFieldIdentificadorVuelos.getText().isEmpty()||jTextFieldOrigenVuelos.getText().isEmpty()||jTextFieldDestinoVuelos.getText().isEmpty())){
                     IQuery query = new CriteriaQuery(Vuelo.class, Where.equal("identificador", jTextFieldIdentificadorVuelos.getText()));
                     Objects<Vuelo> resultado = odb.getObjects(query);
@@ -1061,12 +1087,36 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
                         JOptionPane.showMessageDialog(this, "Pos guardao'");
                         jPanelTripulacionComponentShown(new ComponentEvent (this, 0));              
                     }
-                }
+                    }
                 else{
                     JOptionPane.showMessageDialog(this, "Introduce datos en todos los campos");
                 }           
                 break;
-        }
+                
+                case 2://modificar
+                    IQuery query2 = new CriteriaQuery(Vuelo.class, Where.equal("identificador", jTextFieldIdentificadorVuelos.getText()));//pasajero buscado
+                    Objects <Pasajeros> resultados = odb.getObjects(query2);
+                    vuelobuscado.setAeropuerto_destino(jTextFieldDestinoVuelos.getText());
+                    vuelobuscado.setAeropuerto_origen(jTextFieldOrigenVuelos.getText());
+                    odb.store(vuelobuscado);
+                    odb.commit();
+                    JOptionPane.showMessageDialog(this, "Guardadito");   
+                    jPanelTripulacionComponentShown(new ComponentEvent (this, 0));
+                    switchBotonesVuelo(true,true,true,true);
+                    switchCamposVuelos(true,true,true);
+                    break;
+
+                case 3:// borrar
+                    int BotonSi = JOptionPane.YES_NO_OPTION;
+                    int dialogResult = JOptionPane.showConfirmDialog (null, "¿Seguro quieres borrar este vuelo","Aviso",BotonSi);
+                    if(dialogResult == JOptionPane.YES_OPTION){
+                        odb.delete(vuelobuscado);
+                        odb.commit();
+                        limpiarCamposPasajeros();
+                        JOptionPane.showMessageDialog(this, "Borradito");
+                    }  
+                    break;        
+        }  
     }//GEN-LAST:event_jButtonAceptarVuelosActionPerformed
 
     private void jButtonGestionTripulantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGestionTripulantesActionPerformed
@@ -1093,6 +1143,11 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         switchBotonesPasajeros(true, true, false, false);
         
     }//GEN-LAST:event_jButtonBorrarPasajerosActionPerformed
+
+    private void jButtonBorrarVuelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarVuelosActionPerformed
+        controlvuelo = 3;
+        
+    }//GEN-LAST:event_jButtonBorrarVuelosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1252,6 +1307,13 @@ public class MainWindow extends javax.swing.JFrame implements WindowListener {
         jButtonModificarVuelos.setEnabled(modificar);
         jButtonBorrarVuelos.setEnabled(borrar);
     
+    }
+    
+     private void switchCamposVuelos (Boolean codigo, Boolean origen, Boolean destino){
+    
+        jTextFieldIdentificadorVuelos.setEnabled(codigo);
+        jTextFieldOrigenVuelos.setEnabled(origen);
+        jTextFieldDestinoVuelos.setEnabled(destino);
     }
 
     @Override
